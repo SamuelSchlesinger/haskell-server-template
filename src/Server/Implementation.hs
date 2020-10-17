@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DerivingVia #-}
 module Server.Implementation
@@ -39,7 +41,8 @@ newtype App x = App
 runApp :: Context -> App x -> Servant.Handler x
 runApp ctx app = do
   Servant.Handler $ ExceptT $ liftIO $ catches (fmap Right $ unApp app ctx)
-    [ 
+    [ Handler \(e :: Servant.ServerError) -> pure (Left e)
+    , Handler \(_ :: SomeException) -> pure (Left Servant.err500)
     ]
 
 -- | The actual implementation of the 'API' as a servant server.

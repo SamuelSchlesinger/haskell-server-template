@@ -28,6 +28,7 @@ module Server.Prelude
   , putStrLn
   , MonadIO(..)
   , MonadUnliftIO(..)
+  , SomeException
   , Monoid(..)
   , Semigroup(..)
   , Generic
@@ -58,7 +59,7 @@ import Prelude
   , ($), Monoid(..), Semigroup(..), fromIntegral, String
   , Monad(..), Applicative(..), flip, Int
   )
-import UnliftIO (MonadIO(..), MonadUnliftIO(..), catches, Handler(..))
+import UnliftIO (MonadIO(..), MonadUnliftIO(..), catches, Handler(..), SomeException)
 import Data.Function
   ( (&) )
 import Data.Word (Word16)
