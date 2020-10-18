@@ -3,7 +3,8 @@
 A minimal template for Haskell HTTP servers using [servant](https://www.servant.dev/),
 [wai](https://hackage.haskell.org/package/wai), [warp](https://hackage.haskell.org/package/warp),
 [fast-logger](https://hackage.haskell.org/package/fast-logger),
-[ekg](https://hackage.haskell.org/package/fast-logger). The aim of
+[ekg](https://hackage.haskell.org/package/ekg),
+[commander-cli](https://hackage.haskell.org/package/commander-cli). The aim of
 this repository is to create a minimal template covering some of the
 boilerplate like settings and scaffolding, minimally sane middleware like a
 request logger and an automatic HEAD request injector, and a start on a custom
@@ -14,8 +15,8 @@ use it in free software as well as proprietary.
 
 # Operation
 
-To run this server, run it with `cabal run server -- run`. If you run `cabal run server -- help`,
-you will see:
+To run this server with the default configuration, run it with `cabal run server -- run`.
+If you run `cabal run server -- help`, you will see:
 
 ```
 usage:
@@ -23,7 +24,15 @@ name: server
 |
 +- subprogram: help
 |
-`- option: -config <configuration-file :: FilePath>
++- subprogram: run
+|  |
+|  +- description: runs the server using the configuration provided
+|  |
+|  `- option: -config <configuration-file :: FilePath>, filepath of configuration, defaults to config.json
+|
+`- subprogram: docs
+   |
+   `- description: prints out documentation for the server
 ```
 
 The first invocation used the `config.json` file present in the repository,
@@ -32,6 +41,12 @@ After running it, the server will be available at the host, port pair that
 is specified in the config, and the EKG server, if present in the config,
 will be available at the host, port pair that is specified for it in the
 config. If a TLS config is provided, the server will be run using TLS.
+
+Note: The EKG server will never be run using TLS. You should never expose
+the port you run it on to the outside world, otherwise people will have
+access to all of your metrics. The preferred way to use it remotely in
+production would be to direct traffic securely through a TLS enabled proxy,
+or to port-forward under the protection of a VPN.
 
 # Code Structure
 
