@@ -16,6 +16,7 @@ Portability: POSIX, Windows
 module Server.Config
 ( Config(..)
 , testConfig
+, readConfigFile
 , HTTPConfig(..)
 , TLSConfig(..)
 , LogConfig(..)
@@ -30,6 +31,8 @@ import Server.Config.HTTP
 import Server.Config.EKG
 import Server.Config.TLS
 import Server.Config.Log
+
+import Data.Aeson (eitherDecodeFileStrict')
 
 -- | The configuration for our server. This will grow to include all of the
 -- values not baked into the server.
@@ -55,7 +58,16 @@ testConfig = Config
     }
   , tlsConfig = Nothing
   , logConfig = LogConfig
-    { minLogLevel = Error
+    { minLogLevel = Debug
     }
-  , ekgConfig = Nothing
+  , ekgConfig = Just EKGConfig
+    { ekgHTTPConfig = HTTPConfig
+      { port = Port 8081
+      , host = "localhost"
+      }
+    }
   }
+
+-- | Reads the 'Config' expressed as JSON in the given file.
+readConfigFile :: FilePath -> IO (Either String Config)
+readConfigFile configFilePath = eitherDecodeFileStrict' (filePathString configFilePath)

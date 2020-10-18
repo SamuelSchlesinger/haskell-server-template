@@ -18,12 +18,11 @@ module Server.Main
 
 import Server.Prelude
 
-import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..))
+import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
 import Server.Implementation (createMiddleware, createApplication)
 import Server.Monad (createContext)
 
 import Options.Commander (command_, toplevel, optDef, raw, sub, (<+>), description, annotated)
-import Data.Aeson (eitherDecodeFileStrict')
 import qualified Data.Text
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as WarpTLS
@@ -39,7 +38,7 @@ main = command_ . toplevel @"server" $
     . optDef @"config" @"configuration-file" (FilePath "config.json") $ \configFilePath -> raw $ do
     -- Parse our configuration from the filepath provided by the user, or
     -- the default if none was provided.
-    eitherConfig <- eitherDecodeFileStrict' (filePathString configFilePath)
+    eitherConfig <- readConfigFile configFilePath
     case eitherConfig of
       -- If we cannot parse our config, tell the user and show the error
       -- from aeson.

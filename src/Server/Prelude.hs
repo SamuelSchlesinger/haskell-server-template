@@ -26,6 +26,7 @@ module Server.Prelude
   , Category(..)
   , Functor(..)
   , Applicative(..)
+  , String
   , Monad(..)
   , Bool(..)
   , HashMap
