@@ -5,73 +5,26 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DerivingVia #-}
 module Server.Implementation
-( theAPI
-, server
-, createContext
-, runApp
+( server
 ) where
 
 import Server.Prelude
+import Server.API
 
-import Server.API (API, Healthz, theAPI)
-import Server.Config (Config)
+import Server.Monad (App)
 import Servant (ServerT, NoContent(..))
-import Control.Monad.Except (ExceptT(..))
-import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)
-import Control.Monad.Logger.CallStack (defaultLogStr, toLogStr)
-import qualified Servant.Server as Servant
-
--- | The 'Context' is the stuff that we will construct from the 'Config' and
--- use throughout our 'App' logic. This may include a database connection pool,
--- a client to some service, or an in-memory data structure, etc.
-data Context = Context
-  { contextConfig :: Config
-  , loggerSet :: LoggerSet
-  }
-
--- | Create the 'Context' from the 'Config'.
-createContext :: Config -> IO Context
-createContext contextConfig = do
-  loggerSet <- newStderrLoggerSet 4096
-  pure Context
-    { contextConfig
-    , loggerSet
-    }
-
--- | The monad in which our server's logic will take place.
-newtype App x = App
-  { unApp :: Context -> IO x
-  }
-  deriving (Functor, Applicative, Monad, MonadIO, MonadUnliftIO) via ReaderT Context IO
-
--- | Retrieve the 'Context' in the 'App' monad.
-context :: App Context
-context = App pure
-
-instance MonadLogger App where
-  monadLoggerLog loc logSource logLevel msg = do
-    ls <- fmap loggerSet $ context
-    liftIO $ pushLogStr ls $ defaultLogStr loc logSource logLevel (toLogStr msg)
-
-instance MonadLoggerIO App where
-  askLoggerIO = do
-    ls <- fmap loggerSet $ context
-    pure (\loc logSource logLevel msg -> pushLogStr ls $ defaultLogStr loc logSource logLevel msg)
-
--- | A function which dispatches our 'App' monad given some 'Context'.
-runApp :: Context -> App x -> Servant.Handler x
-runApp ctx app = do
-  Servant.Handler $ ExceptT $ liftIO $ catches (fmap Right $ unApp app ctx)
-    [ Handler \(e :: Servant.ServerError) -> pure (Left e)
-    , Handler \(_ :: SomeException) -> pure (Left Servant.err500)
-    ]
 
 -- | The actual implementation of the 'API' as a servant server.
 server :: ServerT API App
-server = healthz
+server = health :<|> ready
 
--- | The implementation of the 'Healthz' endpoint.
-healthz :: ServerT Healthz App
-healthz = do
+-- | The implementation of the 'Health' endpoint.
+health :: ServerT Health App
+health = do
   logDebug "Checking server health"
+  pure NoContent
+
+ready :: ServerT Ready App
+ready = do
+  logDebug "Checking server readiness"
   pure NoContent

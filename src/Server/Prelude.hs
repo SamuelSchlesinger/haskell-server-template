@@ -24,7 +24,6 @@ module Server.Prelude
   , (&)
   , ($)
   , IO
-  , catches
   , putStrLn
   , MonadIO(..)
   , MonadUnliftIO(..)
@@ -34,7 +33,6 @@ module Server.Prelude
   , logError
   , logInfo
   , logWarn
-  , SomeException
   , Monoid(..)
   , Semigroup(..)
   , Generic
@@ -49,6 +47,7 @@ module Server.Prelude
   , filePathString
   , GenericJSON(GenericJSON, unGenericJSON)
   , Int
+  , module UnliftIO
   ) where
 
 import Control.Monad.Logger.CallStack (MonadLogger(..), MonadLoggerIO(..), logDebug, logWarn, logError, logInfo)
@@ -66,7 +65,7 @@ import Prelude
   , ($), Monoid(..), Semigroup(..), fromIntegral, String
   , Monad(..), Applicative(..), flip, Int
   )
-import UnliftIO (MonadIO(..), MonadUnliftIO(..), catches, Handler(..), SomeException)
+import UnliftIO
 import Data.Function
   ( (&) )
 import Data.Word (Word16)

@@ -6,19 +6,22 @@ module Server.Main where
 
 import Server.Prelude
 
-import Options.Commander (command_, toplevel, optDef, raw)
 import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..))
+import Server.Implementation (server)
+import Server.Monad (createContext, runApp)
+import Server.API (theAPI)
+
+import Options.Commander (command_, toplevel, optDef, raw)
 import Data.Aeson (eitherDecodeFileStrict')
-import qualified Data.Text
-import qualified Network.Wai.Handler.Warp as Warp
-import qualified Network.Wai.Handler.WarpTLS as WarpTLS
 import Network.Wai (Middleware)
 import Network.Wai.Middleware.RequestLogger (mkRequestLogger, outputFormat, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
 import Network.Wai.Middleware.Autohead (autohead)
 import Data.Default (def)
-import Server.Implementation (theAPI, server, createContext, runApp)
 import Servant (serve, hoistServer)
+import qualified Data.Text
+import qualified Network.Wai.Handler.Warp as Warp
+import qualified Network.Wai.Handler.WarpTLS as WarpTLS
 
 -- | The entry point for our server.
 main :: IO ()
@@ -38,7 +41,7 @@ main = command_ . toplevel @"server" $ program where
       -- either using TLS or not.
       Right config -> do
         let
-          run = case config & httpConfig & tlsConfig of
+          run = case config & tlsConfig of
             Nothing -> Warp.runSettings
             Just tls -> WarpTLS.runTLS
               ( case tls & chain of
