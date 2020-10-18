@@ -47,9 +47,11 @@ module Server.Prelude
   , filePathString
   , GenericJSON(GenericJSON, unGenericJSON)
   , Int
+  , void
   , module UnliftIO
   ) where
 
+import Control.Monad (void)
 import Control.Monad.Logger.CallStack (MonadLogger(..), MonadLoggerIO(..), logDebug, logWarn, logError, logInfo)
 import Options.Commander (Unrender)
 import Data.Proxy (Proxy(..))

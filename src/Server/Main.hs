@@ -2,18 +2,20 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
-module Server.Main where
+module Server.Main
+( main
+, createApplication
+) where
 
 import Server.Prelude
 
 import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..))
-import Server.Implementation (server)
-import Server.Monad (createContext, runApp)
-import Server.API (theAPI)
+import Server.Implementation (server, theAPI)
+import Server.Monad (createContext, runApp, Context)
 
 import Options.Commander (command_, toplevel, optDef, raw)
 import Data.Aeson (eitherDecodeFileStrict')
-import Network.Wai (Middleware)
+import Network.Wai (Middleware, Application)
 import Network.Wai.Middleware.RequestLogger (mkRequestLogger, outputFormat, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
 import Network.Wai.Middleware.Autohead (autohead)
@@ -60,7 +62,10 @@ main = command_ . toplevel @"server" $ program where
                 (hostPreference (config & httpConfig & host))
         context <- createContext config
         middleware <- createMiddleware config  
-        run warpSettings . middleware . serve theAPI $ hoistServer theAPI (runApp context) server
+        run warpSettings (createApplication middleware context)
+
+createApplication :: Middleware -> Context -> Application
+createApplication middleware context = middleware . serve theAPI $ hoistServer theAPI (runApp context) server
 
 createMiddleware :: Config -> IO Middleware
 createMiddleware _config = do

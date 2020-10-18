@@ -3,4 +3,7 @@
     "host": "localhost",
     "port": 8080
   }
+, "logConfig": {
+    "minLogLevel": "Debug"
+  }
 }

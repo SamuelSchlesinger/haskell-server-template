@@ -6,9 +6,10 @@ module Server.API
 , Health
 , Ready
 , (:<|>)(..)
+, NoContent(..)
 ) where
 
-import Servant.API (GetNoContent, Description, Summary, (:>), (:<|>)(..))
+import Servant.API (GetNoContent, Description, Summary, (:>), (:<|>)(..), NoContent(..))
 import Server.Prelude
 
 

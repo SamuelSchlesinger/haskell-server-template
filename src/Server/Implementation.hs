@@ -5,14 +5,17 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DerivingVia #-}
 module Server.Implementation
-( server
+( theAPI
+, server
+, health
+, ready
 ) where
 
 import Server.Prelude
 import Server.API
 
 import Server.Monad (App)
-import Servant (ServerT, NoContent(..))
+import Servant (ServerT)
 
 -- | The actual implementation of the 'API' as a servant server.
 server :: ServerT API App
