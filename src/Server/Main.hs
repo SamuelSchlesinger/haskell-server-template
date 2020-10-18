@@ -22,16 +22,17 @@ import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..))
 import Server.Implementation (createMiddleware, createApplication)
 import Server.Monad (createContext)
 
-import Options.Commander (command_, toplevel, optDef, raw)
+import Options.Commander (command_, toplevel, optDef, raw, sub, (<+>))
 import Data.Aeson (eitherDecodeFileStrict')
 import qualified Data.Text
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as WarpTLS
+import qualified Server.Docs as Docs
 
 -- | The entry point for our server.
 main :: IO ()
-main = command_ . toplevel @"server" $ program where
-  program = optDef @"config" @"configuration-file" (FilePath "config.json") $ \configFilePath -> raw $ do
+main = command_ . toplevel @"server" $ sub @"run" runServer <+> sub @"docs" (raw Docs.main) where
+  runServer = optDef @"config" @"configuration-file" (FilePath "config.json") $ \configFilePath -> raw $ do
     -- Parse our configuration from the filepath provided by the user, or
     -- the default if none was provided.
     eitherConfig <- eitherDecodeFileStrict' (filePathString configFilePath)

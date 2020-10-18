@@ -25,12 +25,17 @@ module Server.Implementation
 import Server.Prelude
 import Server.API
 
-import Server.Monad (App, Context, runApp)
+import Server.Monad (App, Context(..), runApp, EKGContext(..))
 import Servant (ServerT, serve, hoistServer)
 import Network.Wai (Application, Middleware)
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
 import Network.Wai.Middleware.RequestLogger (outputFormat, mkRequestLogger, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
 import Network.Wai.Middleware.Autohead (autohead)
+import qualified Network.Wai as Wai
+import qualified Data.HashMap.Strict as HashMap
+import qualified System.Remote.Counter as EKG
+import qualified System.Remote.Monitoring as EKG
+import qualified Data.Text
 
 -- | The actual implementation of the 'API' as a servant server.
 server :: ServerT API App
@@ -60,8 +65,29 @@ createApplication context = serve theAPI $ hoistServer theAPI (runApp context) s
 
 -- | Create the 'Middleware' given the 'Context'.
 createMiddleware :: Context -> IO Middleware
-createMiddleware _context = do
+createMiddleware context = do
   requestLogger <- mkRequestLogger def
     { outputFormat = CustomOutputFormatWithDetailsAndHeaders formatAsJSONWithHeaders                
     }
-  pure $ requestLogger . autohead
+  let
+    ekgMiddleware' = case context & ekgContext of
+      Nothing -> id
+      Just ekgContext' -> ekgMiddleware ekgContext'
+  pure $ ekgMiddleware' . requestLogger . autohead
+
+ekgMiddleware :: EKGContext -> Middleware
+ekgMiddleware ekgContext app req respond = do
+  let key = Data.Text.concat ["Endpoint Counter: \"", intercalate "/" (Wai.pathInfo req), "\""]
+  counters <- readMVar (ekgContext & ekgEndpointCounters)
+  counter <- case HashMap.lookup key counters of
+    Nothing -> modifyMVar (ekgContext & ekgEndpointCounters) \counters' -> do
+      case HashMap.lookup key counters' of
+        Nothing -> do
+          counter <- EKG.getCounter key (ekgContext & ekgServer)
+          pure (HashMap.insert key counter counters', counter)
+        Just counter -> do
+          pure (counters', counter)
+    Just counter -> do
+      pure counter
+  EKG.inc counter
+  app req respond

@@ -14,6 +14,7 @@ Portability: POSIX, Windows
 -}
 module Server.Prelude
   ( Text
+  , intercalate
   , ToJSON(..)
   , FromJSON(..)
   , Read(..)
@@ -27,6 +28,7 @@ module Server.Prelude
   , Applicative(..)
   , Monad(..)
   , Bool(..)
+  , HashMap
   , ReaderT(..)
   , Proxy(..)
   , Either(..)
@@ -71,7 +73,7 @@ import Options.Commander (Unrender)
 import Data.Proxy (Proxy(..))
 import Data.Text.IO (putStrLn)
 import GHC.Generics (Generic, Rep)
-import Data.Text (Text)
+import Data.Text (Text, intercalate)
 import Data.Aeson
   ( ToJSON(..), FromJSON(..) )
 import Data.String (IsString)
@@ -92,6 +94,7 @@ import Control.Monad.Reader (ReaderT(..))
 import Network.Wai.Handler.Warp (HostPreference)
 import Data.ByteString (ByteString)
 import Data.Text.Encoding (encodeUtf8)
+import Data.HashMap.Strict (HashMap)
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Aeson
 import qualified Data.Text

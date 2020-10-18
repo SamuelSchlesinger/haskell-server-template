@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DerivingVia #-}
@@ -21,7 +22,9 @@ import Control.Monad.Except (ExceptT(..))
 import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)
 import Control.Monad.Logger.CallStack (defaultLogStr, toLogStr)
 import qualified System.Remote.Monitoring as EKG
+import qualified System.Remote.Counter as EKG
 import qualified Servant.Server as Servant
+import qualified Data.HashMap.Strict as HashMap
 
 -- | The 'Context' is the stuff that we will construct from the 'Config' and
 -- use throughout our 'App' logic. This may include a database connection pool,
@@ -29,21 +32,31 @@ import qualified Servant.Server as Servant
 data Context = Context
   { config :: Config
   , loggerSet :: LoggerSet
-  , ekgServer :: Maybe EKG.Server
+  , ekgContext :: Maybe EKGContext
+  }
+
+data EKGContext = EKGContext
+  { ekgServer :: EKG.Server
+  , ekgEndpointCounters :: MVar (HashMap Text EKG.Counter)
   }
 
 -- | Create the 'Context' from the 'Config'.
 createContext :: Config -> IO Context
 createContext config = do
   loggerSet <- newStderrLoggerSet 4096
-  ekgServer <- case config & ekgConfig of
+  ekgContext <- case config & ekgConfig of
     Nothing -> pure Nothing
     Just EKGConfig{ ekgHTTPConfig } -> do
-      Just <$> EKG.forkServer (hostByteString $ ekgHTTPConfig & host) (portInt $ ekgHTTPConfig & port)
+      ekgServer <- EKG.forkServer (hostByteString $ ekgHTTPConfig & host) (portInt $ ekgHTTPConfig & port)
+      ekgEndpointCounters <- newMVar HashMap.empty
+      pure . Just $ EKGContext
+        { ekgServer
+        , ekgEndpointCounters
+        }
   pure Context
     { config
     , loggerSet
-    , ekgServer
+    , ekgContext
     }
 
 -- | The monad in which our server's logic will take place.

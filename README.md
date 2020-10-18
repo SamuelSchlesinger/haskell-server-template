@@ -5,12 +5,33 @@ A minimal template for Haskell HTTP servers using [servant](https://www.servant.
 [fast-logger](https://hackage.haskell.org/package/fast-logger),
 [ekg](https://hackage.haskell.org/package/fast-logger). The aim of
 this repository is to create a minimal template covering some of the
-boilerplate like settings for HTTP and TLS, minimally sane middleware like a
+boilerplate like settings and scaffolding, minimally sane middleware like a
 request logger and an automatic HEAD request injector, and a start on a custom
-Prelude.
+Prelude, which is a good practice to have for any codebase.
 
 This repository is licensed under the MIT license in order to allow people to
 use it in free software as well as proprietary.
+
+# Operation
+
+To run this server, run it with `cabal run server -- run`. If you run `cabal run server -- help`,
+you will see:
+
+```
+usage:
+name: server
+|
++- subprogram: help
+|
+`- option: -config <configuration-file :: FilePath>
+```
+
+The first invocation used the `config.json` file present in the repository,
+but we can see that we can pass a custom configuration file if we want to.
+After running it, the server will be available at the host, port pair that
+is specified in the config, and the EKG server, if present in the config,
+will be available at the host, port pair that is specified for it in the
+config. If a TLS config is provided, the server will be run using TLS.
 
 # Code Structure
 
