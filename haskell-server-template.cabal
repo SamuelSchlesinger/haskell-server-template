@@ -11,6 +11,7 @@ license:             MIT
 author:              Samuel Schlesinger
 maintainer:          sgschlesinger@gmail.com
 build-type:          Simple
+category:            Web
 tested-with:         GHC ==8.6.1 ||
                          ==8.6.2 ||
                          ==8.6.3 ||
@@ -60,7 +61,7 @@ library
                        bytestring >=0.10,
                        unordered-containers >=0.2
   default-language:    Haskell2010
-  ghc-options:         -Wall -O0
+  ghc-options:         -Wall
 
 executable server
   main-is:             Application.hs
@@ -81,5 +82,4 @@ test-suite server-test
                        text,
                        haskell-server-template
   other-extensions:    PostfixOperators, TypeApplications, BlockArguments
-  ghc-options:         -threaded -rtsopts "-with-rtsopts=-N -T" -O2
   default-language:    Haskell2010

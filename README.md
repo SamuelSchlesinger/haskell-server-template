@@ -23,7 +23,7 @@ module and re-exported from the
 module as is required by Haskell applications. The server's logic is exported from
 [Server.Implementation](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Implementation.hs),
 and the tools we used to make that implementation are exported from
-[Server.Monad](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Monad.hs)
+[Server.Context](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Context.hs)
 and [Server.Config](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Config.hs).
 The `Config` type is defined in the `Server.Config.*` hierarchy, and we use that to construct a
 `Context`. Once we have a `Context`, we use that to run our `App` monad. Both of these types are defined
@@ -38,6 +38,15 @@ maintains, such as the [ekg](https://hackage.haskell.org/package/ekg)
 and the [fast-logger](https://hackage.haskell.org/package/fast-logger) [LoggerSet](https://hackage.haskell.org/package/fast-logger/docs/System-Log-FastLogger-LoggerSet.html#t:LoggerSet).
 If we wanted to maintain a TCP connection to some other application, we would
 maintain that in the `Context`.
+
+To structure the server logic itself, we use the [servant](https://www.servant.dev/) library.
+First, we define the API in [Servant.API](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/API.hs),
+then the server's implementation is defined in
+[Servant.Implementation](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Implementation.hs).
+Finally, we apply the HTTP and TLS config and actually run the implementation in
+[Server.Main](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Main.hs)
+using the [warp](https://hackage.haskell.org/package/warp) HTTP server, or
+[warp-tls](https://hackage.haskell.org/package/warp-tls) if there are TLS settings in the configuration file.
 
 # Operation
 
