@@ -39,9 +39,9 @@ and the [fast-logger](https://hackage.haskell.org/package/fast-logger) [LoggerSe
 If we wanted to maintain a TCP connection to some other application, we would
 maintain that in the `Context`.
 
-To structure the server logic itself, we use the [servant](https://www.servant.dev/) library.
+To structure our server's API, we use the [servant](https://www.servant.dev/) library.
 First, we define the API in [Servant.API](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/API.hs),
-then the server's implementation is defined in
+then we implement that API in
 [Servant.Implementation](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Implementation.hs).
 Finally, we apply the HTTP and TLS config and actually run the implementation in
 [Server.Main](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Main.hs)
