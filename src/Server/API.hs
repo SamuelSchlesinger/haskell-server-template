@@ -39,8 +39,8 @@ type Health =
     "Check the health of the server."
   :> Description
     "The server will reply with a 204 status code if it is live. \
-    \This form of health means that we should not restart this service, though \
-    \it may not be available for all functionality."
+    \This status code means that we should not restart this service, though \
+    \it may not be yet available for all functionality."
   :> "health" :> GetNoContent
 
 -- | A readiness check. This could, in a more complete application, make
