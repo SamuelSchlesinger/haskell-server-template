@@ -2,6 +2,15 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE BlockArguments #-}
+{- |
+Module: Server.Monad
+Description: The concrete monad which we will use to write our server logic.
+Copyright: (c) Samuel Schlesinger 2020-2024
+License: MIT
+Maintainer: sgschlesinger@gmail.com
+Stability: experimental
+Portability: POSIX, Windows
+-}
 module Server.Monad where
 
 import Server.Prelude

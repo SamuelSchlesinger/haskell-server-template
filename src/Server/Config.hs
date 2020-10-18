@@ -4,12 +4,22 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{- |
+Module: Server.Config
+Description: Our server's configuration.
+Copyright: (c) Samuel Schlesinger 2020-2024
+License: MIT
+Maintainer: sgschlesinger@gmail.com
+Stability: experimental
+Portability: POSIX, Windows
+-}
 module Server.Config
 ( Config(..)
+, testConfig
 , HTTPConfig(..)
 , TLSConfig(..)
 , LogConfig(..)
-, testConfig
+, MinLogLevel(..)
 , toLogLevel
 ) where
 
@@ -31,7 +41,7 @@ data Config = Config
   deriving stock (Eq, Ord, Show, Read, Generic)
   deriving (ToJSON, FromJSON) via GenericJSON Config
 
--- | A reasonable 'Config' to use during testing of any kind.
+-- | A reasonable 'Config' to use during testing.
 testConfig :: Config
 testConfig = Config
   { httpConfig = HTTPConfig

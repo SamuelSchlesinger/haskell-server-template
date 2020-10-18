@@ -3,6 +3,15 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{- |
+Module: Server.Prelude
+Description: A collection of common imports throughout the codebase.
+Copyright: (c) Samuel Schlesinger 2020-2024
+License: MIT
+Maintainer: sgschlesinger@gmail.com
+Stability: experimental
+Portability: POSIX, Windows
+-}
 module Server.Prelude
   ( Text
   , ToJSON(..)

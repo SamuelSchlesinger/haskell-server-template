@@ -2,6 +2,15 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
+{- |
+Module: Server.Main
+Description: The entrypoint for our server.
+Copyright: (c) Samuel Schlesinger 2020-2024
+License: MIT
+Maintainer: sgschlesinger@gmail.com
+Stability: experimental
+Portability: POSIX, Windows
+-}
 module Server.Main
 ( main
 , createApplication
@@ -62,10 +71,11 @@ main = command_ . toplevel @"server" $ program where
                 (hostPreference (config & httpConfig & host))
         context <- createContext config
         middleware <- createMiddleware config  
-        run warpSettings (createApplication middleware context)
+        run warpSettings . middleware $ createApplication context
 
-createApplication :: Middleware -> Context -> Application
-createApplication middleware context = middleware . serve theAPI $ hoistServer theAPI (runApp context) server
+-- | Create the application given the 'Context'.
+createApplication :: Context -> Application
+createApplication context = serve theAPI $ hoistServer theAPI (runApp context) server
 
 createMiddleware :: Config -> IO Middleware
 createMiddleware _config = do
