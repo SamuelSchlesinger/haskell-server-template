@@ -6,8 +6,8 @@ A minimal template for Haskell HTTP servers using [servant](https://www.servant.
 [ekg](https://hackage.haskell.org/package/ekg),
 [commander-cli](https://hackage.haskell.org/package/commander-cli). The aim of
 this repository is to create a minimal template covering some of the
-boilerplate like settings and scaffolding, minimally sane middleware, and the
-start of a custom Prelude for the codebase.
+boilerplate like settings and scaffolding, minimally sane middleware,
+basic monitoring capabilities, and the start of a custom Prelude for the codebase.
 
 This repository is licensed under the MIT license in order to allow people to
 use it in free software as well as proprietary.
