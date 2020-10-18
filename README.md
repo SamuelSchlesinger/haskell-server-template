@@ -6,12 +6,38 @@ A minimal template for Haskell HTTP servers using [servant](https://www.servant.
 [ekg](https://hackage.haskell.org/package/ekg),
 [commander-cli](https://hackage.haskell.org/package/commander-cli). The aim of
 this repository is to create a minimal template covering some of the
-boilerplate like settings and scaffolding, minimally sane middleware like a
-request logger and an automatic HEAD request injector, and a start on a custom
-Prelude, which is a good practice to have for any codebase.
+boilerplate like settings and scaffolding, minimally sane middleware, and the
+start of a custom Prelude for the codebase.
 
 This repository is licensed under the MIT license in order to allow people to
 use it in free software as well as proprietary.
+
+# Code Structure
+
+![Module Structure](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/modules.png)
+
+The code is structured as a library, with the entrypoint in
+[Server.Main](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Main.hs)
+module and re-exported from the
+[Main](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/app/Application.hs)
+module as is required by Haskell applications. The server's logic is exported from
+[Server.Implementation](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Implementation.hs),
+and the tools we used to make that implementation is exported from
+[Server.Monad](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Monad.hs)
+and [Server.Config](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Config.hs).
+The `Config` type is defined in the `Server.Config.*` hierarchy, and we use that to construct a
+`Context` which we use to run our `App` monad, each of which are defined in
+[Server.Monad](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Monad.hs).
+We can think of the `Config` as the information provided by the operator,
+such as which host and port to listen on, configuring our minimum printable log
+level, or containing filepaths to our TLS certificates. If we wanted to conncet
+to a database, we would put the connection information in the `Config`.
+On the other hand, we can think of the `Context` as the dynamic structures the server
+maintains, such as the [ekg](https://hackage.haskell.org/package/ekg)
+[Server](https://hackage.haskell.org/package/ekg/docs/System-Remote-Monitoring.html#t:Server)
+and the [fast-logger](https://hackage.haskell.org/package/fast-logger) [LoggerSet](https://hackage.haskell.org/package/fast-logger/docs/System-Log-FastLogger-LoggerSet.html#t:LoggerSet).
+If we wanted to maintain a TCP connection to some other application, we would
+maintain that in the `Context`.
 
 # Operation
 
@@ -47,10 +73,6 @@ the port you run it on to the outside world, otherwise people will have
 access to all of your metrics. The preferred way to use it remotely in
 production would be to direct traffic securely through a TLS enabled proxy,
 or to port-forward under the protection of a VPN.
-
-# Code Structure
-
-![Module Structure](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/modules.png)
 
 # Generated API Documentation
 
