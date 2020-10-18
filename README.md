@@ -5,4 +5,4 @@ https://github.com/SamuelSchlesinger/haskell-server-template/blob/dev/modules.pn
 
 # Code Structure
 
-![Module Structure](https://github.com/SamuelSchlesinger/haskell-server-template/blob/dev/modules.png)
+![Module Structure](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/modules.png)
