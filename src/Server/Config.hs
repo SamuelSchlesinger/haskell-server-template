@@ -21,11 +21,13 @@ module Server.Config
 , LogConfig(..)
 , MinLogLevel(..)
 , toLogLevel
+, EKGConfig(..)
 ) where
 
 import Server.Prelude
 
 import Server.Config.HTTP
+import Server.Config.EKG
 import Server.Config.TLS
 import Server.Config.Log
 
@@ -37,6 +39,9 @@ data Config = Config
   , tlsConfig :: Maybe TLSConfig
     -- ^ The configuration for TLS, if present
   , logConfig :: LogConfig
+    -- ^ The configuration for our logger
+  , ekgConfig :: Maybe EKGConfig
+    -- ^ The configuration for EKG, if present
   }
   deriving stock (Eq, Ord, Show, Read, Generic)
   deriving (ToJSON, FromJSON) via GenericJSON Config
@@ -52,4 +57,5 @@ testConfig = Config
   , logConfig = LogConfig
     { minLogLevel = Error
     }
+  , ekgConfig = Nothing
   }

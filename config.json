@@ -6,4 +6,10 @@
 , "logConfig": {
     "minLogLevel": "Debug"
   }
+, "ekgConfig": {
+    "ekgHTTPConfig": {
+      "host": "localhost",
+      "port": 8081
+    }
+  }
 }

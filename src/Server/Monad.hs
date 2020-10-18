@@ -15,11 +15,12 @@ module Server.Monad where
 
 import Server.Prelude
 
-import Server.Config (Config(..), LogConfig(..), toLogLevel)
+import Server.Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTPConfig(..))
 
 import Control.Monad.Except (ExceptT(..))
 import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)
 import Control.Monad.Logger.CallStack (defaultLogStr, toLogStr)
+import qualified System.Remote.Monitoring as EKG
 import qualified Servant.Server as Servant
 
 -- | The 'Context' is the stuff that we will construct from the 'Config' and
@@ -28,15 +29,21 @@ import qualified Servant.Server as Servant
 data Context = Context
   { config :: Config
   , loggerSet :: LoggerSet
+  , ekgServer :: Maybe EKG.Server
   }
 
 -- | Create the 'Context' from the 'Config'.
 createContext :: Config -> IO Context
 createContext config = do
   loggerSet <- newStderrLoggerSet 4096
+  ekgServer <- case config & ekgConfig of
+    Nothing -> pure Nothing
+    Just EKGConfig{ ekgHTTPConfig } -> do
+      Just <$> EKG.forkServer (hostByteString $ ekgHTTPConfig & host) (portInt $ ekgHTTPConfig & port)
   pure Context
     { config
     , loggerSet
+    , ekgServer
     }
 
 -- | The monad in which our server's logic will take place.

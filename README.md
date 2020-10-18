@@ -2,7 +2,8 @@
 
 A minimal template for Haskell HTTP servers using [servant](https://www.servant.dev/),
 [wai](https://hackage.haskell.org/package/wai), [warp](https://hackage.haskell.org/package/warp),
-[fast-logger](https://hackage.haskell.org/package/fast-logger). The aim of
+[fast-logger](https://hackage.haskell.org/package/fast-logger),
+[ekg](https://hackage.haskell.org/package/fast-logger). The aim of
 this repository is to create a minimal template covering some of the
 boilerplate like settings for HTTP and TLS, minimally sane middleware like a
 request logger and an automatic HEAD request injector, and a start on a custom

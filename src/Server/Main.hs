@@ -19,17 +19,11 @@ module Server.Main
 import Server.Prelude
 
 import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..))
-import Server.Implementation (server, theAPI)
-import Server.Monad (createContext, runApp, Context)
+import Server.Implementation (createMiddleware, createApplication)
+import Server.Monad (createContext)
 
 import Options.Commander (command_, toplevel, optDef, raw)
 import Data.Aeson (eitherDecodeFileStrict')
-import Network.Wai (Middleware, Application)
-import Network.Wai.Middleware.RequestLogger (mkRequestLogger, outputFormat, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
-import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
-import Network.Wai.Middleware.Autohead (autohead)
-import Data.Default (def)
-import Servant (serve, hoistServer)
 import qualified Data.Text
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as WarpTLS
@@ -70,16 +64,5 @@ main = command_ . toplevel @"server" $ program where
             & Warp.setHost
                 (hostPreference (config & httpConfig & host))
         context <- createContext config
-        middleware <- createMiddleware config  
+        middleware <- createMiddleware context  
         run warpSettings . middleware $ createApplication context
-
--- | Create the application given the 'Context'.
-createApplication :: Context -> Application
-createApplication context = serve theAPI $ hoistServer theAPI (runApp context) server
-
-createMiddleware :: Config -> IO Middleware
-createMiddleware _config = do
-  requestLogger <- mkRequestLogger def
-    { outputFormat = CustomOutputFormatWithDetailsAndHeaders formatAsJSONWithHeaders                
-    }
-  pure $ requestLogger . autohead

@@ -52,14 +52,19 @@ module Server.Prelude
   , portInt
   , Host(Host, unHost)
   , hostPreference
+  , hostByteString
+  , ByteString
+  , LazyByteString
   , FilePath(FilePath, unFilePath)
   , filePathString
   , GenericJSON(GenericJSON, unGenericJSON)
   , Int
   , void
+  , def
   , module UnliftIO
   ) where
 
+import Data.Default
 import Control.Monad (void)
 import Control.Monad.Logger.CallStack (MonadLogger(..), MonadLoggerIO(..), logDebug, logWarn, logError, logInfo)
 import Options.Commander (Unrender)
@@ -85,9 +90,14 @@ import Control.Category
   )
 import Control.Monad.Reader (ReaderT(..))
 import Network.Wai.Handler.Warp (HostPreference)
+import Data.ByteString (ByteString)
+import Data.Text.Encoding (encodeUtf8)
+import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Aeson
 import qualified Data.Text
 import qualified Data.String
+
+type LazyByteString = LBS.ByteString
 
 newtype Port = Port { unPort :: Word16 }
   deriving newtype (Show, Read, Eq, Ord, Enum, ToJSON, FromJSON)
@@ -97,6 +107,9 @@ portInt = fromIntegral . unPort
 
 newtype Host = Host { unHost :: Text }
   deriving newtype (Show, Read, Eq, Ord, IsString, ToJSON, FromJSON)
+
+hostByteString :: Host -> ByteString
+hostByteString = encodeUtf8 . unHost
 
 hostPreference :: Host -> HostPreference
 hostPreference = Data.String.fromString . Data.Text.unpack . unHost

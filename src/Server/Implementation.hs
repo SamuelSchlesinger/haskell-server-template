@@ -18,13 +18,19 @@ module Server.Implementation
 , server
 , health
 , ready
+, createApplication
+, createMiddleware
 ) where
 
 import Server.Prelude
 import Server.API
 
-import Server.Monad (App)
-import Servant (ServerT)
+import Server.Monad (App, Context, runApp)
+import Servant (ServerT, serve, hoistServer)
+import Network.Wai (Application, Middleware)
+import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
+import Network.Wai.Middleware.RequestLogger (outputFormat, mkRequestLogger, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
+import Network.Wai.Middleware.Autohead (autohead)
 
 -- | The actual implementation of the 'API' as a servant server.
 server :: ServerT API App
@@ -47,3 +53,15 @@ ready :: ServerT Ready App
 ready = do
   logDebug "Checking server readiness"
   pure NoContent
+
+-- | Create the 'Application' given the 'Context'.
+createApplication :: Context -> Application
+createApplication context = serve theAPI $ hoistServer theAPI (runApp context) server
+
+-- | Create the 'Middleware' given the 'Context'.
+createMiddleware :: Context -> IO Middleware
+createMiddleware _context = do
+  requestLogger <- mkRequestLogger def
+    { outputFormat = CustomOutputFormatWithDetailsAndHeaders formatAsJSONWithHeaders                
+    }
+  pure $ requestLogger . autohead
