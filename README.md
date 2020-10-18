@@ -12,10 +12,10 @@ Up to date
 
 ## GET /health
 
-### Check the health of the server. The server will reply with a 204 status code if it is live. This form of health means that we should not restart this service, though it may not be available for all functionality.
-
-
 ### Check the health of the server.
+
+
+### The server will reply with a 204 status code if it is live. This form of health means that we should not restart this service, though it may not be available for all functionality.
 
 
 ### Response:
@@ -27,10 +27,10 @@ Up to date
 
 ## GET /ready
 
-### Check the readiness of the server. The server will reply with a 204 status code if it is ready to receive traffic.
-
-
 ### Check the readiness of the server.
+
+
+### The server will reply with a 204 status code if it is ready to receive traffic.
 
 
 ### Response:

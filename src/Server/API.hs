@@ -25,23 +25,21 @@ type API =
 
 -- | Checks whether or not the service is alive.
 type Health =
-  Description
-    "Check the health of the server. \
-    \The server will reply with a 204 status code if it is live. \
+  Summary
+    "Check the health of the server."
+  :> Description
+    "The server will reply with a 204 status code if it is live. \
     \This form of health means that we should not restart this service, though \
     \it may not be available for all functionality."
-  :> Summary
-    "Check the health of the server."
   :> "health" :> GetNoContent
 
 -- | A readiness check. This could, in a more complete application, make
 -- sure we can connect to the database or some cache server, or some other
 -- application specific service.
 type Ready =
-  Description
-    "Check the readiness of the server. \
-    \The server will reply with a 204 status code if it is ready to receive \
-    \traffic."
-  :> Summary
+  Summary
     "Check the readiness of the server."
+  :> Description
+    "The server will reply with a 204 status code if it is ready to receive \
+    \traffic."
   :> "ready" :> GetNoContent
