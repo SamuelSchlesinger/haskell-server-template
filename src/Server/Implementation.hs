@@ -25,7 +25,7 @@ module Server.Implementation
 import Server.Prelude
 import Server.API
 
-import Server.Monad (App, Context(..), runApp, EKGContext(..))
+import Server.Context (App, Context(..), runApp, EKGContext(..), ioToHandler)
 import Servant (ServerT, serve, hoistServer)
 import Network.Wai (Application, Middleware)
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
@@ -61,7 +61,7 @@ ready = do
 
 -- | Create the 'Application' given the 'Context'.
 createApplication :: Context -> Application
-createApplication context = serve theAPI $ hoistServer theAPI (runApp context) server
+createApplication context = serve theAPI $ hoistServer theAPI (ioToHandler . runApp context) server
 
 -- | Create the 'Middleware' given the 'Context'.
 createMiddleware :: Context -> IO Middleware

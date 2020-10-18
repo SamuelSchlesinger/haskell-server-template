@@ -4,15 +4,23 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE BlockArguments #-}
 {- |
-Module: Server.Monad
-Description: The concrete monad which we will use to write our server logic.
+Module: Server.Context
+Description: The context which our server will maintain, and a monad which is a reader on that context.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
 Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Monad where
+module Server.Context
+( Context(..)
+, EKGContext(..)
+, createContext
+, Config(..)
+, App
+, runApp
+, ioToHandler
+) where
 
 import Server.Prelude
 
@@ -65,13 +73,17 @@ newtype App x = App
   }
   deriving (Functor, Applicative, Monad, MonadIO, MonadUnliftIO) via ReaderT Context IO
 
--- | A function which dispatches our 'App' monad given some 'Context'.
-runApp :: Context -> App x -> Servant.Handler x
-runApp ctx app = do
-  Servant.Handler $ ExceptT $ liftIO $ catches (fmap Right $ unApp app ctx)
+-- | A transformation from 'IO' into 'Servant.Handler'.
+ioToHandler :: IO x -> Servant.Handler x
+ioToHandler io =
+  Servant.Handler $ ExceptT $ liftIO $ catches (fmap Right io)
     [ Handler \(e :: Servant.ServerError) -> pure (Left e)
     , Handler \(_ :: SomeException) -> pure (Left Servant.err500)
     ]
+
+-- | A function which dispatches our 'App' monad given some 'Context'.
+runApp :: Context -> App x -> IO x
+runApp ctx app = unApp app ctx
 
 -- | Retrieve the 'Context' in the 'App' monad.
 context :: App Context

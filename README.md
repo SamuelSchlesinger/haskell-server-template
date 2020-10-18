@@ -22,12 +22,12 @@ module and re-exported from the
 [Main](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/app/Application.hs)
 module as is required by Haskell applications. The server's logic is exported from
 [Server.Implementation](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Implementation.hs),
-and the tools we used to make that implementation is exported from
+and the tools we used to make that implementation are exported from
 [Server.Monad](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Monad.hs)
 and [Server.Config](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Config.hs).
 The `Config` type is defined in the `Server.Config.*` hierarchy, and we use that to construct a
-`Context` which we use to run our `App` monad, each of which are defined in
-[Server.Monad](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Monad.hs).
+`Context`. Once we have a `Context`, we use that to run our `App` monad. Both of these types are defined
+in [Server.Context](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Context.hs).
 We can think of the `Config` as the information provided by the operator,
 such as which host and port to listen on, configuring our minimum printable log
 level, or containing filepaths to our TLS certificates. If we wanted to conncet

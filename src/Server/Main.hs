@@ -20,7 +20,7 @@ import Server.Prelude
 
 import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
 import Server.Implementation (createMiddleware, createApplication)
-import Server.Monad (createContext)
+import Server.Context (createContext)
 
 import Options.Commander (command_, toplevel, optDef, raw, sub, (<+>), description, annotated)
 import qualified Data.Text

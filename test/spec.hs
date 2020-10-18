@@ -6,7 +6,7 @@ module Main where
 import Server.Prelude
 import Test.Hspec
 
-import Server.Monad (createContext, unApp)
+import Server.Context (createContext, runApp)
 import Server.Config (testConfig, readConfigFile)
 import Server.Implementation (health, ready)
 import Server.API (NoContent(..), theAPI)
@@ -16,13 +16,13 @@ import qualified Data.Text
 
 main :: IO ()
 main = do
-  context <- createContext testConfig
+  ctx <- createContext testConfig
   hspec do
     describe "endpoints" do
       it "is ready" do
-        flip unApp context health `shouldReturn` NoContent
+        runApp ctx health `shouldReturn` NoContent
       it "is healthy" do
-        flip unApp context ready `shouldReturn` NoContent
+        runApp ctx ready `shouldReturn` NoContent
     describe "config" do
       it "can be parsed" do
         readConfigFile (FilePath . Data.Text.pack $ $(fileRelativeToAbsolute "../config.json"))
