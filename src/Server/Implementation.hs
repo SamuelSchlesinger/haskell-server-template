@@ -29,8 +29,7 @@ data Context = Context
   , loggerSet :: LoggerSet
   }
 
--- | Create the 'Context' from the 'Config'. Right now, this doesn't have to be
--- in 'IO', but it 
+-- | Create the 'Context' from the 'Config'.
 createContext :: Config -> IO Context
 createContext contextConfig = do
   loggerSet <- newStderrLoggerSet 4096
@@ -45,6 +44,7 @@ newtype App x = App
   }
   deriving (Functor, Applicative, Monad, MonadIO, MonadUnliftIO) via ReaderT Context IO
 
+-- | Retrieve the 'Context' in the 'App' monad.
 context :: App Context
 context = App pure
 
