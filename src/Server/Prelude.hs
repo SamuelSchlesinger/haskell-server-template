@@ -28,6 +28,12 @@ module Server.Prelude
   , putStrLn
   , MonadIO(..)
   , MonadUnliftIO(..)
+  , MonadLogger(..)
+  , MonadLoggerIO(..)
+  , logDebug
+  , logError
+  , logInfo
+  , logWarn
   , SomeException
   , Monoid(..)
   , Semigroup(..)
@@ -45,6 +51,7 @@ module Server.Prelude
   , Int
   ) where
 
+import Control.Monad.Logger.CallStack (MonadLogger(..), MonadLoggerIO(..), logDebug, logWarn, logError, logInfo)
 import Options.Commander (Unrender)
 import Data.Proxy (Proxy(..))
 import Data.Text.IO (putStrLn)

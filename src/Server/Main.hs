@@ -12,6 +12,11 @@ import Data.Aeson (eitherDecodeFileStrict')
 import qualified Data.Text
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as WarpTLS
+import Network.Wai (Middleware)
+import Network.Wai.Middleware.RequestLogger (mkRequestLogger, outputFormat, OutputFormat(CustomOutputFormatWithDetailsAndHeaders))
+import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
+import Network.Wai.Middleware.Autohead (autohead)
+import Data.Default (def)
 import Server.Implementation (theAPI, server, createContext, runApp)
 import Servant (serve, hoistServer)
 
@@ -51,4 +56,12 @@ main = command_ . toplevel @"server" $ program where
             & Warp.setHost
                 (hostPreference (config & httpConfig & host))
         context <- createContext config
-        run warpSettings . serve theAPI $ hoistServer theAPI (runApp context) server
+        middleware <- createMiddleware config  
+        run warpSettings . middleware . serve theAPI $ hoistServer theAPI (runApp context) server
+
+createMiddleware :: Config -> IO Middleware
+createMiddleware _config = do
+  requestLogger <- mkRequestLogger def
+    { outputFormat = CustomOutputFormatWithDetailsAndHeaders formatAsJSONWithHeaders                
+    }
+  pure $ requestLogger . autohead
