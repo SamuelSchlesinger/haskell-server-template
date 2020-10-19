@@ -18,7 +18,6 @@ module Server
 , health
 , ready
 , createApplication
-, createMiddleware
 ) where
 
 import API (API, Health, Ready, (:<|>)(..), NoContent(..), theAPI)
@@ -58,8 +57,10 @@ ready = do
   pure NoContent
 
 -- | Create the 'Application' given the 'Context'.
-createApplication :: Context -> Application
-createApplication context = serve theAPI $ hoistServer theAPI (ioToHandler . runApp context) server
+createApplication :: Context -> IO Application
+createApplication context = do
+  middleware <- createMiddleware context
+  pure (middleware . serve theAPI $ hoistServer theAPI (ioToHandler . runApp context) server)
 
 -- | Create the 'Middleware' given the 'Context'.
 createMiddleware :: Context -> IO Middleware

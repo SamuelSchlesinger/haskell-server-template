@@ -20,6 +20,7 @@ module Prelude
   , Read(..)
   , Show(..)
   , Eq(..)
+  , either
   , Ord(..)
   , Enum(..)
   , Num(..)
@@ -72,6 +73,7 @@ module Prelude
   , void
   , def
   , forever
+  , (=<<)
   , module UnliftIO
   ) where
 
@@ -100,7 +102,7 @@ import Data.Bool (Bool(..))
 import Data.Maybe (Maybe(..))
 import Control.Applicative (Applicative(..))
 import Control.Monad (Monad(..))
-import Data.Either (Either(..))
+import Data.Either (Either(..), either)
 --import Prelude
 --  ( Eq(..), Ord(..), Read(..), Enum(..)
 --  , Maybe(..), Functor(..), Bool(..), IO, Either(..)
@@ -122,6 +124,7 @@ import Network.Wai.Handler.Warp (HostPreference)
 import Data.ByteString (ByteString)
 import Data.Text.Encoding (encodeUtf8)
 import Data.HashMap.Strict (HashMap)
+import Control.Monad ((=<<))
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Aeson
 import qualified Data.Text

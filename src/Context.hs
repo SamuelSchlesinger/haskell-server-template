@@ -25,10 +25,10 @@ module Context
 
 import Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTPConfig(..))
 
-import Control.Monad.Except (ExceptT(..))
+import Control.Monad.Except (ExceptT(..), lift)
 import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)
 import Control.Monad.Logger.CallStack (defaultLogStr, toLogStr)
-import Control.Concurrent.Actor (Actor, act, receive, send)
+import Control.Concurrent.Actor (Actor, act, receive, send, hoistActionT)
 import qualified System.Remote.Monitoring as EKG
 import qualified System.Remote.Counter as EKG
 import qualified Servant.Server as Servant
@@ -53,8 +53,6 @@ data EKGContext = EKGContext
 createContext :: Config -> IO Context
 createContext config = do
   loggerSet <- newStderrLoggerSet 4096
-  laterQueue <- act . forever $ do
-    void $ try @_ @SomeException (receive liftIO)
   ekgContext <- case config & ekgConfig of
     Nothing -> pure Nothing
     Just EKGConfig{ ekgHTTPConfig } -> do
@@ -64,12 +62,16 @@ createContext config = do
         { ekgServer
         , ekgEndpointCounters
         }
-  pure Context
-    { config
-    , loggerSet
-    , ekgContext
-    , laterQueue
-    }
+  let
+    ctx = Context
+      { config
+      , loggerSet
+      , ekgContext
+      , laterQueue = error "The later queue worker must not send itself messages"
+      }
+  laterQueue <- act . hoistActionT (runApp ctx) . forever $ do
+    try @_ @SomeException (receive liftIO) >>= either (lift . logDebug . pack . show) pure
+  pure ctx { laterQueue = laterQueue }
 
 -- | The monad in which our server's logic will take place.
 newtype App x = App

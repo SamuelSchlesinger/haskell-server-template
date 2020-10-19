@@ -15,7 +15,7 @@ module Entrypoint
 ) where
 
 import Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
-import Server (createMiddleware, createApplication)
+import Server (createApplication)
 import Context (createContext)
 import qualified Docs as Docs
 
@@ -28,7 +28,8 @@ import qualified Network.Wai.Handler.WarpTLS as WarpTLS
 main :: IO ()
 main = command_ . toplevel @"server" $
   sub @"run" (description @"runs the server using the configuration provided" runServer)
-  <+> sub @"docs" (description @"prints out documentation for the server" $ raw Docs.main) where
+  <+> sub @"docs" (description @"prints out documentation for the server" $ raw Docs.main)
+  <+> raw (putStrLn "Try: server help") where
   runServer =
     annotated @"filepath of configuration, defaults to config.json"
     . optDef @"config" @"configuration-file" (FilePath "config.json") $ \configFilePath -> raw $ do
@@ -64,5 +65,4 @@ main = command_ . toplevel @"server" $
             & Warp.setHost
                 (hostPreference (config & httpConfig & host))
         context <- createContext config
-        middleware <- createMiddleware context  
-        run warpSettings . middleware $ createApplication context
+        run warpSettings =<< createApplication context
