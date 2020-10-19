@@ -6,7 +6,7 @@ module Main where
 import Server.Prelude
 import Test.Hspec
 
-import Server.Context (createContext, runApp)
+import Server.Context (createContext, Config(ekgConfig), runApp)
 import Server.Config (testConfig, readConfigFile)
 import Server.Implementation (health, ready)
 import Server.API (NoContent(..), theAPI)
@@ -16,7 +16,7 @@ import qualified Data.Text
 
 main :: IO ()
 main = do
-  ctx <- createContext testConfig
+  ctx <- createContext testConfig { ekgConfig = Nothing }
   hspec do
     describe "endpoints" do
       it "is ready" do

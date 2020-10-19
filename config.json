@@ -1,6 +1,6 @@
 {
   "httpConfig": {
-    "host": "localhost",
+    "host": "0.0.0.0",
     "port": 8080
   }
 , "logConfig": {
@@ -8,7 +8,7 @@
   }
 , "ekgConfig": {
     "ekgHTTPConfig": {
-      "host": "localhost",
+      "host": "0.0.0.0",
       "port": 8081
     }
   }

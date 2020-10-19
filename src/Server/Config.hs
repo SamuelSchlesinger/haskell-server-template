@@ -54,7 +54,7 @@ testConfig :: Config
 testConfig = Config
   { httpConfig = HTTPConfig
     { port = Port 8080
-    , host = "localhost"
+    , host = "0.0.0.0"
     }
   , tlsConfig = Nothing
   , logConfig = LogConfig
@@ -63,7 +63,7 @@ testConfig = Config
   , ekgConfig = Just EKGConfig
     { ekgHTTPConfig = HTTPConfig
       { port = Port 8081
-      , host = "localhost"
+      , host = "0.0.0.0"
       }
     }
   }
