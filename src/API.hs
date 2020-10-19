@@ -19,8 +19,6 @@ module API
 ) where
 
 import Servant.API (GetNoContent, Description, Summary, (:>), (:<|>)(..), NoContent(..))
-import Prelude
-
 
 -- | A 'Proxy' of our 'API'. Due to servant's design, this is helpful to
 -- export from here.
