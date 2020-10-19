@@ -78,16 +78,17 @@ createMiddleware context = do
 ekgMiddleware :: EKGContext -> Middleware
 ekgMiddleware ekgContext app req respond = do
   let key = Data.Text.concat ["Endpoint Counter: \"", intercalate "/" (Wai.pathInfo req), "\""]
-  counters <- readMVar (ekgContext & ekgEndpointCounters)
-  counter <- case HashMap.lookup key counters of
-    Nothing -> modifyMVar (ekgContext & ekgEndpointCounters) \counters' -> do
-      case HashMap.lookup key counters' of
-        Nothing -> do
-          counter <- EKG.getCounter key (ekgContext & ekgServer)
-          pure (HashMap.insert key counter counters', counter)
-        Just counter -> do
-          pure (counters', counter)
-    Just counter -> do
-      pure counter
-  EKG.inc counter
+  laterIO do
+    counters <- readMVar (ekgContext & ekgEndpointCounters)
+    counter <- case HashMap.lookup key counters of
+      Nothing -> modifyMVar (ekgContext & ekgEndpointCounters) \counters' -> do
+        case HashMap.lookup key counters' of
+          Nothing -> do
+            counter <- EKG.getCounter key (ekgContext & ekgServer)
+            pure (HashMap.insert key counter counters', counter)
+          Just counter -> do
+            pure (counters', counter)
+      Just counter -> do
+        pure counter
+    EKG.inc counter
   app req respond

@@ -29,6 +29,7 @@ import Server.Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTP
 import Control.Monad.Except (ExceptT(..))
 import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)
 import Control.Monad.Logger.CallStack (defaultLogStr, toLogStr)
+import Control.Concurrent.Actor (Actor, act, receive, send)
 import qualified System.Remote.Monitoring as EKG
 import qualified System.Remote.Counter as EKG
 import qualified Servant.Server as Servant
@@ -41,8 +42,9 @@ data Context = Context
   { config :: Config
   , loggerSet :: LoggerSet
   , ekgContext :: Maybe EKGContext
+  , laterQueue :: Actor (IO ())
   }
-
+  
 data EKGContext = EKGContext
   { ekgServer :: EKG.Server
   , ekgEndpointCounters :: MVar (HashMap Text EKG.Counter)
@@ -52,6 +54,8 @@ data EKGContext = EKGContext
 createContext :: Config -> IO Context
 createContext config = do
   loggerSet <- newStderrLoggerSet 4096
+  laterQueue <- act . forever $ do
+    receive liftIO
   ekgContext <- case config & ekgConfig of
     Nothing -> pure Nothing
     Just EKGConfig{ ekgHTTPConfig } -> do
@@ -65,6 +69,7 @@ createContext config = do
     { config
     , loggerSet
     , ekgContext
+    , laterQueue
     }
 
 -- | The monad in which our server's logic will take place.
@@ -88,6 +93,12 @@ runApp ctx app = unApp app ctx
 -- | Retrieve the 'Context' in the 'App' monad.
 context :: App Context
 context = App pure
+
+-- | Sends an 'IO' action into the queue to be done at a leisurely pace.
+laterIO :: IO () -> App ()
+laterIO io = do
+  ctx <- context
+  atomically (send (ctx & laterQueue) io)
 
 instance MonadLogger App where
   monadLoggerLog loc logSource logLevel msg = do

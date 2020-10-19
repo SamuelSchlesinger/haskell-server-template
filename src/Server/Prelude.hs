@@ -64,11 +64,12 @@ module Server.Prelude
   , Int
   , void
   , def
+  , forever
   , module UnliftIO
   ) where
 
 import Data.Default
-import Control.Monad (void)
+import Control.Monad (void, forever)
 import Control.Monad.Logger.CallStack (MonadLogger(..), MonadLoggerIO(..), logDebug, logWarn, logError, logInfo)
 import Options.Commander (Unrender)
 import Data.Proxy (Proxy(..))
