@@ -30,7 +30,7 @@ theAPI = Proxy
 -- | The API of our service as a Haskell type, currently consisting of
 -- just the 'Health' endpoint.
 type API =
-    Health
+  Health
   :<|> Ready
 
 -- | Checks whether or not the service is alive.
