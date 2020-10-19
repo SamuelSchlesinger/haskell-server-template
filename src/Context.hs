@@ -70,7 +70,8 @@ createContext config = do
       , laterQueue = error "The later queue worker must not send itself messages"
       }
   laterQueue <- act . hoistActionT (runApp ctx) . forever $ do
-    try @_ @SomeException (receive liftIO) >>= either (lift . logDebug . pack . show) pure
+    void . try @_ @SomeException $
+      try @_ @SomeException (receive liftIO) >>= either (lift . logDebug . pack . show) pure
   pure ctx { laterQueue = laterQueue }
 
 -- | The monad in which our server's logic will take place.

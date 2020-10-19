@@ -24,7 +24,7 @@ main = do
     describe "config" do
       it "can be parsed" do
         readConfigFile (FilePath . Data.Text.pack $ $(fileRelativeToAbsolute "../config.json"))
-          `shouldReturn` Right testConfig 
+          `shouldReturn` Right testConfig
     describe "later" do
       it "lets us postpone actions" do
         x <- newEmptyMVar
