@@ -3,8 +3,7 @@
 A minimal template for Haskell HTTP servers using [servant](https://www.servant.dev/),
 [wai](https://hackage.haskell.org/package/wai), [warp](https://hackage.haskell.org/package/warp),
 [fast-logger](https://hackage.haskell.org/package/fast-logger),
-[ekg](https://hackage.haskell.org/package/ekg),
-[commander-cli](https://hackage.haskell.org/package/commander-cli). The aim of
+[ekg](https://hackage.haskell.org/package/ekg). The aim of
 this repository is to create a minimal template covering some of the
 boilerplate like settings and scaffolding, minimally sane middleware,
 basic monitoring capabilities, and the start of a custom Prelude for the codebase.
