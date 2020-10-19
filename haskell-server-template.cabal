@@ -1,4 +1,4 @@
-cabal-version:       >=1.10
+cabal-version:       2.4
 name:                haskell-server-template
 version:             0.1.0.0
 synopsis:            An HTTP server template
@@ -27,11 +27,11 @@ library
                        Server.Config.Log,
                        Server.Config.EKG,
                        Server.Context,
-                       Server.Prelude,
                        Server.Implementation,
                        Server.Main,
                        Server.Docs,
-                       Server.API
+                       Server.API,
+                       Prelude
   hs-source-dirs:      src
   build-depends:       base >=4.12,
                        aeson >=1.5,
@@ -47,12 +47,14 @@ library
                        commander-cli >=0.7,
                        monad-logger >=0.3,
                        fast-logger >=3.0,
+                       integer-gmp >=1.0,
                        wai-extra >=3.1,
                        data-default >=0.7,
                        ekg >=0.4,
                        bytestring >=0.10,
                        unordered-containers >=0.2,
                        stm-actor >=0.2
+  mixins:              base hiding (Prelude)
   default-language:    Haskell2010
   ghc-options:         -Wall
 

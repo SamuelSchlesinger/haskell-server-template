@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DerivingVia #-}
@@ -20,9 +20,8 @@ module Server.Context
 , App
 , runApp
 , ioToHandler
+, later
 ) where
-
-import Server.Prelude
 
 import Server.Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTPConfig(..))
 
@@ -55,7 +54,7 @@ createContext :: Config -> IO Context
 createContext config = do
   loggerSet <- newStderrLoggerSet 4096
   laterQueue <- act . forever $ do
-    receive liftIO
+    void $ try @_ @SomeException (receive liftIO)
   ekgContext <- case config & ekgConfig of
     Nothing -> pure Nothing
     Just EKGConfig{ ekgHTTPConfig } -> do
@@ -95,10 +94,10 @@ context :: App Context
 context = App pure
 
 -- | Sends an 'IO' action into the queue to be done at a leisurely pace.
-laterIO :: IO () -> App ()
-laterIO io = do
+later :: App () -> App ()
+later activity = do
   ctx <- context
-  atomically (send (ctx & laterQueue) io)
+  atomically (send (ctx & laterQueue) (unApp activity ctx))
 
 instance MonadLogger App where
   monadLoggerLog loc logSource logLevel msg = do

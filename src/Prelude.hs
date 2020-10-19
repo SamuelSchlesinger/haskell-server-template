@@ -4,7 +4,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {- |
-Module: Server.Prelude
+Module: Prelude
 Description: A collection of common imports throughout the codebase.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -12,7 +12,7 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Prelude
+module Prelude
   ( Text
   , intercalate
   , ToJSON(..)
@@ -22,6 +22,12 @@ module Server.Prelude
   , Eq(..)
   , Ord(..)
   , Enum(..)
+  , Num(..)
+  , Integer
+  , Integral(..)
+  , Real(..)
+  , Fractional(..)
+  , fromIntegral
   , Maybe(..)
   , Category(..)
   , Functor(..)
@@ -78,16 +84,34 @@ import GHC.Generics (Generic, Rep)
 import Data.Text (Text, intercalate)
 import Data.Aeson
   ( ToJSON(..), FromJSON(..) )
-import Data.String (IsString)
-import Prelude
-  ( Read(..), Show(..), Eq(..), Ord(..), Read(..), Enum(..)
-  , Maybe(..), Functor(..), Bool(..), IO, Either(..)
-  , ($), Monoid(..), Semigroup(..), fromIntegral, String
-  , Monad(..), Applicative(..), flip, Int
-  )
+import Data.String (IsString, String)
+import Text.Read (Read(..))
+import Text.Show (Show(..))
+import Data.Eq (Eq(..))
+import Data.Ord (Ord(..))
+import GHC.Enum (Enum(..))
+import Data.Int (Int)
+import GHC.Num (Num(..))
+import GHC.Integer (Integer)
+import GHC.Real (Integral(..), Real(..), Fractional(..), fromIntegral)
+import Data.Functor (Functor(..))
+import Data.Bool (Bool(..))
+import Data.Maybe (Maybe(..))
+import Control.Applicative (Applicative(..))
+import Control.Monad (Monad(..))
+import Data.Either (Either(..))
+--import Prelude
+--  ( Eq(..), Ord(..), Read(..), Enum(..)
+--  , Maybe(..), Functor(..), Bool(..), IO, Either(..)
+--  , ($), Monoid(..), Semigroup(..), fromIntegral, String
+--  , Monad(..), Applicative(..), flip, Int
+--  )
 import UnliftIO
 import Data.Function
-  ( (&) )
+  ( (&), ($), flip )
+import System.IO (IO)
+import Data.Monoid (Monoid(..))
+import Data.Semigroup(Semigroup(..))
 import Data.Word (Word16)
 import Control.Category
   ( Category(..)

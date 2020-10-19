@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DerivingStrategies #-}
@@ -16,8 +15,6 @@ module Server.Config.Log
 , MinLogLevel(..)
 , toLogLevel
 ) where
-
-import Server.Prelude
 
 import Control.Monad.Logger (LogLevel(..))
 

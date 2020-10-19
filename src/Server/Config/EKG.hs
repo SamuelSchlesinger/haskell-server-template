@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DerivingStrategies #-}
@@ -16,8 +15,6 @@ EKG is a monitoring server for arbitrary Haskell processes.
 module Server.Config.EKG
 ( EKGConfig(..)
 ) where
-
-import Server.Prelude
 
 import Server.Config.HTTP
 

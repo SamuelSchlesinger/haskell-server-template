@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DerivingStrategies #-}
@@ -14,8 +13,6 @@ Portability: POSIX, Windows
 module Server.Config.TLS
 ( TLSConfig(..)
 ) where
-
-import Server.Prelude
 
 -- | A sub-configuration for the TLS configuration. 
 data TLSConfig = TLSConfig

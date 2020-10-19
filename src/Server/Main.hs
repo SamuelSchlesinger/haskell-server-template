@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
 {- |
 Module: Server.Main
@@ -15,8 +14,6 @@ module Server.Main
 ( main
 , createApplication
 ) where
-
-import Server.Prelude
 
 import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
 import Server.Implementation (createMiddleware, createApplication)

@@ -1,9 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE BlockArguments #-}
 module Main where
 
-import Server.Prelude
 import Test.Hspec
 
 import Server.Context (createContext, Config(ekgConfig), runApp)

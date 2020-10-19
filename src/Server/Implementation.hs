@@ -2,7 +2,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE DerivingVia #-}
 {- |
 Module: Server.Implementation
@@ -22,10 +21,9 @@ module Server.Implementation
 , createMiddleware
 ) where
 
-import Server.Prelude
 import Server.API
 
-import Server.Context (App, Context(..), runApp, EKGContext(..), ioToHandler)
+import Server.Context (App, Context(..), runApp, EKGContext(..), ioToHandler, later)
 import Servant (ServerT, serve, hoistServer)
 import Network.Wai (Application, Middleware)
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
@@ -69,26 +67,25 @@ createMiddleware context = do
   requestLogger <- mkRequestLogger def
     { outputFormat = CustomOutputFormatWithDetailsAndHeaders formatAsJSONWithHeaders                
     }
-  let
-    ekgMiddleware' = case context & ekgContext of
-      Nothing -> id
-      Just ekgContext' -> ekgMiddleware ekgContext'
-  pure $ ekgMiddleware' . requestLogger . autohead
+  pure $ ekgMiddleware context . requestLogger . autohead
 
-ekgMiddleware :: EKGContext -> Middleware
-ekgMiddleware ekgContext app req respond = do
-  let key = Data.Text.concat ["Endpoint Counter: \"", intercalate "/" (Wai.pathInfo req), "\""]
-  laterIO do
-    counters <- readMVar (ekgContext & ekgEndpointCounters)
-    counter <- case HashMap.lookup key counters of
-      Nothing -> modifyMVar (ekgContext & ekgEndpointCounters) \counters' -> do
-        case HashMap.lookup key counters' of
-          Nothing -> do
-            counter <- EKG.getCounter key (ekgContext & ekgServer)
-            pure (HashMap.insert key counter counters', counter)
+ekgMiddleware :: Context -> Middleware
+ekgMiddleware ctx app req respond = do
+  case ctx & ekgContext of
+    Nothing -> app req respond
+    Just ekgContext' -> runApp ctx do
+      let key = Data.Text.concat ["Endpoint Counter: \"", intercalate "/" (Wai.pathInfo req), "\""]
+      later . liftIO $ do
+        counters <- readMVar (ekgContext' & ekgEndpointCounters)
+        counter <- case HashMap.lookup key counters of
+          Nothing -> modifyMVar (ekgContext' & ekgEndpointCounters) \counters' -> do
+            case HashMap.lookup key counters' of
+              Nothing -> do
+                counter <- EKG.getCounter key (ekgContext' & ekgServer)
+                pure (HashMap.insert key counter counters', counter)
+              Just counter -> do
+                pure (counters', counter)
           Just counter -> do
-            pure (counters', counter)
-      Just counter -> do
-        pure counter
-    EKG.inc counter
-  app req respond
+            pure counter
+        EKG.inc counter
+      liftIO $ app req respond

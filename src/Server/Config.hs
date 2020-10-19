@@ -3,7 +3,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {- |
 Module: Server.Config
 Description: Our server's configuration.
@@ -25,7 +24,6 @@ module Server.Config
 , EKGConfig(..)
 ) where
 
-import Server.Prelude
 
 import Server.Config.HTTP
 import Server.Config.EKG

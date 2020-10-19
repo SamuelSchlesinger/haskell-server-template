@@ -11,11 +11,12 @@ module Server.Docs where
 
 import Servant.Docs
 import Server.API
+import qualified System.IO
 
 -- | Prints a markdown documentation text automatically generated for the
 -- servant 'API'.
 main :: IO ()
-main = putStrLn apiString
+main = System.IO.putStrLn apiString
 
 -- | The markdown documentation text automatically generated for the
 -- servant 'API'.
