@@ -23,6 +23,7 @@ module Prelude
   , either
   , Ord(..)
   , Enum(..)
+  , error
   , Num(..)
   , Integer
   , Integral(..)
@@ -103,12 +104,7 @@ import Data.Maybe (Maybe(..))
 import Control.Applicative (Applicative(..))
 import Control.Monad (Monad(..))
 import Data.Either (Either(..), either)
---import Prelude
---  ( Eq(..), Ord(..), Read(..), Enum(..)
---  , Maybe(..), Functor(..), Bool(..), IO, Either(..)
---  , ($), Monoid(..), Semigroup(..), fromIntegral, String
---  , Monad(..), Applicative(..), flip, Int
---  )
+import GHC.Err (error)
 import UnliftIO
 import Data.Function
   ( (&), ($), flip )
