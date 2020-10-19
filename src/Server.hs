@@ -23,6 +23,7 @@ module Server
 
 import API (API, Health, Ready, (:<|>)(..), NoContent(..), theAPI)
 import Context (App, Context(..), runApp, EKGContext(..), ioToHandler, later)
+
 import Servant (ServerT, serve, hoistServer)
 import Network.Wai (Application, Middleware)
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)

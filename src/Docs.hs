@@ -9,14 +9,14 @@ Portability: POSIX, Windows
 -}
 module Docs where
 
-import Servant.Docs
 import API
-import qualified System.IO
+
+import Servant.Docs
 
 -- | Prints a markdown documentation text automatically generated for the
 -- servant 'API'.
 main :: IO ()
-main = System.IO.putStrLn apiString
+main = putStrLn (pack apiString)
 
 -- | The markdown documentation text automatically generated for the
 -- servant 'API'.

@@ -43,6 +43,7 @@ module Prelude
   , ($)
   , IO
   , putStrLn
+  , pack
   , MonadIO(..)
   , MonadUnliftIO(..)
   , MonadLogger(..)
@@ -81,7 +82,7 @@ import Options.Commander (Unrender)
 import Data.Proxy (Proxy(..))
 import Data.Text.IO (putStrLn)
 import GHC.Generics (Generic, Rep)
-import Data.Text (Text, intercalate)
+import Data.Text (Text, intercalate, pack)
 import Data.Aeson
   ( ToJSON(..), FromJSON(..) )
 import Data.String (IsString, String)
