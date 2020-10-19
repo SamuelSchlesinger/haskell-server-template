@@ -30,7 +30,7 @@ The `Config` type is defined in the `Server.Config.*` hierarchy, and we use that
 in [Server.Context](https://github.com/SamuelSchlesinger/haskell-server-template/blob/main/src/Server/Context.hs).
 We can think of the `Config` as the information provided by the operator,
 such as which host and port to listen on, configuring our minimum printable log
-level, or containing filepaths to our TLS certificates. If we wanted to conncet
+level, or containing filepaths to our TLS certificates. If we wanted to connect
 to a database, we would put the connection information in the `Config`.
 On the other hand, we can think of the `Context` as the dynamic structures the server
 maintains, such as the [ekg](https://hackage.haskell.org/package/ekg)
