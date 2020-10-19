@@ -4,10 +4,10 @@ module Main where
 
 import Test.Hspec
 
-import Server.Context (createContext, Config(ekgConfig), runApp)
-import Server.Config (testConfig, readConfigFile)
-import Server.Implementation (health, ready)
-import Server.API (NoContent(..), theAPI)
+import Context (createContext, Config(ekgConfig), runApp)
+import Config (testConfig, readConfigFile)
+import Server (health, ready)
+import API (NoContent(..), theAPI)
 import System.FilePath.TH (fileRelativeToAbsolute)
 import Data.Aeson (eitherDecodeFileStrict')
 import qualified Data.Text

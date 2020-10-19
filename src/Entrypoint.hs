@@ -2,7 +2,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeApplications #-}
 {- |
-Module: Server.Main
+Module: Entrypoint
 Description: The entrypoint for our server.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -10,20 +10,19 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Main
+module Entrypoint
 ( main
-, createApplication
 ) where
 
-import Server.Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
-import Server.Implementation (createMiddleware, createApplication)
-import Server.Context (createContext)
+import Config (Config(..), HTTPConfig(..), TLSConfig(..), readConfigFile)
+import Server (createMiddleware, createApplication)
+import Context (createContext)
+import qualified Docs as Docs
 
 import Options.Commander (command_, toplevel, optDef, raw, sub, (<+>), description, annotated)
 import qualified Data.Text
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as WarpTLS
-import qualified Server.Docs as Docs
 
 -- | The entry point for our server.
 main :: IO ()

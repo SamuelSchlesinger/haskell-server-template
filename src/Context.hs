@@ -4,7 +4,7 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE BlockArguments #-}
 {- |
-Module: Server.Context
+Module: Context
 Description: The context which our server will maintain, and a monad which is a reader on that context.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -12,7 +12,7 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Context
+module Context
 ( Context(..)
 , EKGContext(..)
 , createContext
@@ -23,7 +23,7 @@ module Server.Context
 , later
 ) where
 
-import Server.Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTPConfig(..))
+import Config (Config(..), LogConfig(..), toLogLevel, EKGConfig(..), HTTPConfig(..))
 
 import Control.Monad.Except (ExceptT(..))
 import System.Log.FastLogger.LoggerSet (LoggerSet, newStderrLoggerSet, pushLogStr)

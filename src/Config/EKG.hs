@@ -2,7 +2,7 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DerivingStrategies #-}
 {- |
-Module: Server.Config.EKG
+Module: Config.EKG
 Description: Our server's EKG configuration.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -12,11 +12,11 @@ Portability: POSIX, Windows
 
 EKG is a monitoring server for arbitrary Haskell processes.
 -}
-module Server.Config.EKG
+module Config.EKG
 ( EKGConfig(..)
 ) where
 
-import Server.Config.HTTP
+import Config.HTTP
 
 -- | A sub-configuration for the EKG server settings.
 data EKGConfig = EKGConfig

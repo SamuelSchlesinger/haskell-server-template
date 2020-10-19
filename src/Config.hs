@@ -4,7 +4,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
 {- |
-Module: Server.Config
+Module: Config
 Description: Our server's configuration.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -12,7 +12,7 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Config
+module Config
 ( Config(..)
 , testConfig
 , readConfigFile
@@ -25,10 +25,10 @@ module Server.Config
 ) where
 
 
-import Server.Config.HTTP
-import Server.Config.EKG
-import Server.Config.TLS
-import Server.Config.Log
+import Config.HTTP
+import Config.EKG
+import Config.TLS
+import Config.Log
 
 import Data.Aeson (eitherDecodeFileStrict')
 

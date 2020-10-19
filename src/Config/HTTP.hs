@@ -2,7 +2,7 @@
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE DerivingStrategies #-}
 {- |
-Module: Server.Config.HTTP
+Module: Config.HTTP
 Description: Our server's HTTP configuration.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -10,7 +10,7 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Config.HTTP
+module Config.HTTP
 ( HTTPConfig(..)
 ) where
 

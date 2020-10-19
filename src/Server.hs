@@ -4,7 +4,7 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE DerivingVia #-}
 {- |
-Module: Server.Implementation
+Module: Server
 Description: The implementation of our server's endpoints.
 Copyright: (c) Samuel Schlesinger 2020-2024
 License: MIT
@@ -12,7 +12,7 @@ Maintainer: sgschlesinger@gmail.com
 Stability: experimental
 Portability: POSIX, Windows
 -}
-module Server.Implementation
+module Server
 ( theAPI
 , server
 , health
@@ -21,9 +21,8 @@ module Server.Implementation
 , createMiddleware
 ) where
 
-import Server.API
-
-import Server.Context (App, Context(..), runApp, EKGContext(..), ioToHandler, later)
+import API (API, Health, Ready, (:<|>)(..), NoContent(..), theAPI)
+import Context (App, Context(..), runApp, EKGContext(..), ioToHandler, later)
 import Servant (ServerT, serve, hoistServer)
 import Network.Wai (Application, Middleware)
 import Network.Wai.Middleware.RequestLogger.JSON (formatAsJSONWithHeaders)
@@ -74,7 +73,7 @@ ekgMiddleware ctx app req respond = do
   case ctx & ekgContext of
     Nothing -> app req respond
     Just ekgContext' -> runApp ctx do
-      let key = Data.Text.concat ["Endpoint Counter: \"", intercalate "/" (Wai.pathInfo req), "\""]
+      let key = Data.Text.concat ["Endpoint Count for Path \"", intercalate "/" (Wai.pathInfo req), "\""]
       later . liftIO $ do
         counters <- readMVar (ekgContext' & ekgEndpointCounters)
         counter <- case HashMap.lookup key counters of
